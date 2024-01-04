@@ -1,0 +1,9 @@
+spring.datasource.url=jdbc:mysql://localhost:3306/NameRecordTable?useSSL=false&allowPublicKeyRetrieval=true
+spring.datasource.username=root
+spring.datasource.password=mutemute1085123
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+#這個配置告訴Spring Data JPA使用Hibernate，並設置Hibernate使用的MySQL數據庫的方言為MySQL 5.x版本的InnoDB引擎方言
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+spring.jpa.hibernate.ddl-auto=update
