@@ -1,0 +1,53 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body {
+    display: flex;
+    min-height: 100vh;
+    justify-content: center;
+    background-color: #2f2b3a;
+}
+
+#container {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20%;
+    padding: 20px;
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    margin-bottom: 10px; /* 可根据需要调整项之间的间距 */
+}
+
+.label {
+    font-weight: bold;
+    
+}
+.name{
+color: aliceblue;
+}
+
+.input {
+    width: 100%; /* 宽度占满容器 */
+    box-sizing: border-box; /* 确保宽度包含边框和内边距 */
+
+    
+}
+
+button {
+    padding: 10px;
+    
+    background-color: #4caf50; /* 设置按钮的背景色，可根据需要调整 */
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
