@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 <body>
-    <div id="container">
+    <div id="formcontainer">
         <form>
             <div class="item">
                 <label id="firstname" class="name">姓氏</label>
@@ -18,18 +18,31 @@
                 <label id="lastname" class="name">名稱</label>
                 <input id="lastnameInput" class="input">
             </div>
-            <div class="item">
-                <button id="button">儲存</button>
+            <div class="buttons item">
+                <button id="savebutton">儲存</button>
             </div>
         </form>
+      
+    </div>
+    <div id="tablecontainer">
+        <table id="nametable" border="1">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>firstname</th>
+                    <th>lastname</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
     </div>
     <script>
+//創建姓名資料
 $(document).ready(function () {
-    $("#button").click(function (event) {
+    $("#savebutton").click(function (event) {
         event.preventDefault();
-
-
-
         // 取得輸入的資料
         var firstname = $("#firstnameInput").val();
         var lastname = $("#lastnameInput").val();
@@ -39,9 +52,6 @@ $(document).ready(function () {
             alert("請輸入姓氏和名稱");
             return;
         }
-
-
-
         // 發送 POST 請求
         $.ajax({
             url: "http://localhost:8081/namerecords/create",
@@ -57,6 +67,14 @@ $(document).ready(function () {
                             console.log("資料儲存成功", data);
                             $("#firstnameInput").val('');
                             $("#lastnameInput").val('');
+                             //在按下"儲存"按鈕後，自動更新表格資料
+                            $("#nametable tbody").append(
+                                "<tr>" +
+                                "<td>" + data.id + "</td>" +
+                                "<td>" + data.firstname + "</td>" +
+                                "<td>" + data.lastname + "</td>" +
+                                "</tr>"
+                            );
                         },
                         error: function (error) {
                             // 錯誤處理
@@ -66,7 +84,43 @@ $(document).ready(function () {
         });
 
     });
+
+        // 获取所有姓名数据
+        getData();
+
+function getData() {
+    $.ajax({
+        url: "http://localhost:8081/namerecords/record",
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            console.log("获取数据成功", data);
+
+            // 清空表格数据
+            $("#nametable tbody").empty();
+
+            // 遍历数据并将其添加到表格中
+            for (var i = 0; i < data.length; i++) {
+                $("#nametable tbody").append(
+                    "<tr>" +
+                    "<td>" + data[i].id + "</td>" +
+                    "<td>" + data[i].firstname + "</td>" +
+                    "<td>" + data[i].lastname + "</td>" +
+                    "</tr>"
+                );
+            }
+        },
+        error: function (error) {
+            console.error("获取数据失败", error);
+        }
+    });
+                }
+
+        
+            
 });
+
+
     </script>
 </body>
 
