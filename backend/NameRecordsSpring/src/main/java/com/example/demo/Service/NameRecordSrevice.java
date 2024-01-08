@@ -2,7 +2,9 @@ package com.example.demo.Service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Entity.nameRecords;
@@ -21,5 +23,8 @@ public class NameRecordSrevice {
     }
 	public List<nameRecords> getNameRecords(){
 		return nameRecordRepository.findAll();
+	}
+	public Page<nameRecords> getPages(Pageable pageable){
+		return nameRecordRepository.findAll(pageable);
 	}
 }

@@ -33,12 +33,16 @@
                     <th>lastname</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="tablebody">
 
             </tbody>
         </table>
+        <div id="pagination-container">
+            <!-- 分頁按鈕將被添加在這裡 -->
+        </div>
     </div>
     <script>
+       
 //創建姓名資料
 $(document).ready(function () {
     $("#savebutton").click(function (event) {
@@ -85,41 +89,79 @@ $(document).ready(function () {
 
     });
 
-        // 获取所有姓名数据
-        getData();
+        // 當前頁和頁面大小變量
+        var currentPage = 0;
+        var pageSize = 10;
 
-function getData() {
-    $.ajax({
-        url: "http://localhost:8081/namerecords/record",
-        type: "GET",
-        dataType: "json",
-        success: function (data) {
-            console.log("获取数据成功", data);
+        // 根據頁面和大小加載數據的函數
+        function loadData() {
+            $.ajax({
+                url: "http://localhost:8081/namerecords/pages",
+                type: "GET",
+                dataType: "json",
+                data: {
+                    page: currentPage,
+                    size: pageSize
+                },
+                success: function (data) {
+                    console.log("获取数据成功", data);
 
-            // 清空表格数据
-            $("#nametable tbody").empty();
+                    // 清空表格數據
+                    $("#nametable tbody").empty();
 
-            // 遍历数据并将其添加到表格中
-            for (var i = 0; i < data.length; i++) {
-                $("#nametable tbody").append(
-                    "<tr>" +
-                    "<td>" + data[i].id + "</td>" +
-                    "<td>" + data[i].firstname + "</td>" +
-                    "<td>" + data[i].lastname + "</td>" +
-                    "</tr>"
+                    // 遍歷數據並將其添加到表格中
+                    for (var i = 0; i < data.content.length; i++) {
+                        $("#nametable tbody").append(
+                            "<tr>" +
+                            "<td>" + data.content[i].id + "</td>" +
+                            "<td>" + data.content[i].firstname + "</td>" +
+                            "<td>" + data.content[i].lastname + "</td>" +
+                            "</tr>"
+                        );
+                    }
+
+                    // 渲染分頁按鈕
+                    renderPagination(data);
+                },
+                error: function (error) {
+                    console.error("获取数据失败", error);
+                }
+            });
+        }
+
+        // 渲染分頁按鈕的函數
+        function renderPagination(data) {
+            var totalPages = data.totalPages;
+
+            // 清除先前的分頁按鈕
+            $("#pagination-container").empty();
+
+            // 創建並添加分頁按鈕
+            for (var i = 0; i < totalPages; i++) {
+                $("#pagination-container").append(
+                    "<button class='pagination-button' data-page='" + i + "'>" + (i + 1) + "</button>"
                 );
             }
-        },
-        error: function (error) {
-            console.error("获取数据失败", error);
+
+            // 為分頁按鈕添加點擊事件
+            $(".pagination-button").click(function () {
+                currentPage = $(this).data("page");
+                loadData();
+            });
         }
+
+        // 附加單擊事件以保存按鈕
+        $("#savebutton").click(function (event) {
+            event.preventDefault();
+            // 保存數據的現有代碼...
+
+            // 保存數據後，重新加載帶分頁的表格
+            loadData();
+        });
+
+        // 在頁面加載時加載初始數據
+        loadData();
     });
-                }
-
-        
-            
-});
-
 
     </script>
 </body>
