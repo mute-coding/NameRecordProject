@@ -8,7 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,10 +32,10 @@ public class NameRecordController {
 		String lastname = request.get("lastname");
 		return nameRecordSrevice.createNameRecord(firstname, lastname);
 	} 
-	@GetMapping("/record")
-	public List<nameRecords> getNameRecords() {
-		return nameRecordSrevice.getNameRecords();
-	}
+//	@GetMapping("/record")
+//	public List<nameRecords> getNameRecords() {
+//		return nameRecordSrevice.getNameRecords();
+//	}
 	@GetMapping("/pages")
 	public ResponseEntity<Page<nameRecords>> getPages(
 			@RequestParam(defaultValue = "0") int page,
@@ -42,5 +44,9 @@ public class NameRecordController {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<nameRecords> nameRecords = nameRecordSrevice.getPages(pageable);
 		return ResponseEntity.ok(nameRecords);
+	}
+	@DeleteMapping("/delete/{id}")
+	public void deleteName(@PathVariable Integer id) {
+		nameRecordSrevice.deleteName(id);
 	}
 }

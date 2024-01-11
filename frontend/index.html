@@ -29,8 +29,10 @@
             <thead>
                 <tr>
                     <th>id</th>
-                    <th>firstname</th>
-                    <th>lastname</th>
+                    <th>姓氏</th>
+                    <th>名稱</th>
+                    <th>修改</th>
+                    <th>刪除</th>
                 </tr>
             </thead>
             <tbody id="tablebody">
@@ -77,6 +79,8 @@ $(document).ready(function () {
                                 "<td>" + data.id + "</td>" +
                                 "<td>" + data.firstname + "</td>" +
                                 "<td>" + data.lastname + "</td>" +
+                                "<td><button class='edit-button' data-id='" + data.id + "'>修改</button></td>" +
+                                "<td><button class='delete-button' data-id='" + data.id + "'>刪除</button></td>" +
                                 "</tr>"
                             );
                         },
@@ -88,6 +92,22 @@ $(document).ready(function () {
         });
 
     });
+    // // 在刪除按鈕的點擊事件處理程序中
+    //     $(".delete-button").click(function () {
+    //         var id = $(this).data("id");
+    //         $.ajax({
+    //             url: "http://localhost:8081/namerecords/delete/" + id,
+    //             type: "DELETE",
+    //             success: function (data) {
+    //                 // 處理刪除成功的邏輯
+    //                 console.log("資料刪除成功", data);
+    //             },
+    //             error: function (error) {
+    //                 // 處理刪除失敗的邏輯
+    //                 console.error("資料刪除失敗", error);
+    //             }
+    //         });
+    //     });
 
         // 當前頁和頁面大小變量
         var currentPage = 0;
@@ -116,6 +136,8 @@ $(document).ready(function () {
                             "<td>" + data.content[i].id + "</td>" +
                             "<td>" + data.content[i].firstname + "</td>" +
                             "<td>" + data.content[i].lastname + "</td>" +
+                            "<td><button class='edit-button' data-id='" + data.id + "'>修改</button></td>" +
+                            "<td><button class='delete-button' data-id='" + data.id + "'>刪除</button></td>" +
                             "</tr>"
                         );
                     }
