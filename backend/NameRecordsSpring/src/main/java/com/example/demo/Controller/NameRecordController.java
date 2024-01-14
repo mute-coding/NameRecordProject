@@ -46,12 +46,21 @@ public class NameRecordController {
 		Page<nameRecords> nameRecords = nameRecordSrevice.getPages(pageable);
 		return ResponseEntity.ok(nameRecords);
 	}
+	@GetMapping("/get/{id}")
+	public ResponseEntity<nameRecords> getNameRecordById(@PathVariable Integer id) {
+        nameRecords nameRecord = nameRecordSrevice.getNameRecordById(id);
+        if (nameRecord != null) {
+            return ResponseEntity.ok().body(nameRecord);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 	@DeleteMapping("/delete/{id}")
 	public void deleteName(@PathVariable Integer id) {
 		nameRecordSrevice.deleteName(id);
 	}
-	  @PutMapping("/update/{id}")
-	    public ResponseEntity<nameRecords> updateNameRecord(
+	@PutMapping("/update/{id}")
+    public ResponseEntity<nameRecords> updateNameRecord(
 	            @PathVariable Integer id,
 	            @RequestBody Map<String, String> request) {
 	        String newFirstName = request.get("firstname");

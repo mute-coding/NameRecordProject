@@ -45,101 +45,137 @@
     </div>
     <script>
        
-//創建姓名資料
-$(document).ready(function () {
-    const nametableBody = $("#nametable tbody");
-    const paginationContainer = $("#pagination-container");
+        //創建姓名資料
+        $(document).ready(function () {
+            const nametableBody = $("#nametable tbody");
+            const paginationContainer = $("#pagination-container");
 
-    let currentPage = 0;
-    const pageSize = 10;
+            let currentPage = 0;
+            const pageSize = 10;
 
-    function loadData() {
-        $.ajax({
-            url: `http://localhost:8081/namerecords/pages?page=${currentPage}&size=${pageSize}`,
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-                nametableBody.empty();
-                data.content.forEach(item => {
-                    nametableBody.append(`
-                        <tr>
-                            <td>${item.id}</td>
-                            <td>${item.firstname}</td>
-                            <td>${item.lastname}</td>
-                            <td><button class='edit-button' data-id='${item.id}'>修改</button></td>
-                            <td><button class='delete-button' data-id='${item.id}'>刪除</button></td>
-                        </tr>
-                    `);
+            function loadData() {
+            //分頁功能 
+                $.ajax({
+                    url: `http://localhost:8081/namerecords/pages?page=${currentPage}&size=${pageSize}`,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        nametableBody.empty();
+                        data.content.forEach(item => {
+                            nametableBody.append(`
+                                <tr>
+                                    <td>${item.id}</td>
+                                    <td>${item.firstname}</td>
+                                    <td>${item.lastname}</td>
+                                    <td><button class='edit-button' data-id='${item.id}'>修改</button></td>
+                                    <td><button class='delete-button' data-id='${item.id}'>刪除</button></td>
+                                </tr>
+                            `);
+                        });
+                        renderPagination(data);
+                    },
+                    error: function (error) {
+                        console.error("獲取數據失敗", error);
+                    }
                 });
-                renderPagination(data);
-            },
-            error: function (error) {
-                console.error("獲取數據失敗", error);
             }
-        });
-    }
 
-    function renderPagination(data) {
-        const totalPages = data.totalPages;
-        paginationContainer.empty();
-        for (let i = 0; i < totalPages; i++) {
-            paginationContainer.append(`<button class='pagination-button' data-page='${i}'>${i + 1}</button>`);
-        }
-        $(".pagination-button").click(function () {
-            currentPage = $(this).data("page");
+            function renderPagination(data) {
+                const totalPages = data.totalPages;
+                paginationContainer.empty();
+                for (let i = 0; i < totalPages; i++) {
+                    paginationContainer.append(`<button class='pagination-button' data-page='${i}'>${i + 1}</button>`);
+                }
+                $(".pagination-button").click(function () {
+                    currentPage = $(this).data("page");
+                    loadData();
+                });
+            }
+
+            $("#savebutton").click(function (event) {
+                event.preventDefault();
+                const firstname = $("#firstnameInput").val().trim();
+                const lastname = $("#lastnameInput").val().trim();
+
+                if (firstname === '' || lastname === '') {
+                    alert("請輸入姓氏和名稱");
+                    return;
+                }
+            // 發送 AJAX 請求進行姓名記錄的更新
+                $.ajax({
+                    url: `http://localhost:8081/namerecords/update/${id}`,
+                    type: "PUT",
+                    contentType: "application/json",
+                    data: JSON.stringify({ firstname, lastname }),
+                    dataType: "json",
+                    success: function (data) {
+                        console.log("姓名記錄更新成功", data);
+                        $("#firstnameInput, #lastnameInput").val('');
+                        loadData(); // 更新列表
+                    },
+                    error: function (error) {
+                        console.error("姓名記錄更新失敗", error);
+                    }
+                });
+        //創建姓名資料
+                $.ajax({
+                    url: "http://localhost:8081/namerecords/create",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ firstname, lastname }),
+                    dataType: "json",
+                    success: function (data) {
+                        console.log("資料儲存成功", data);
+                        $("#firstnameInput, #lastnameInput").val('');
+                        loadData();
+                    },
+                    error: function (error) {
+                        console.error("資料儲存失敗", error);
+                    }
+                });
+            });
+
+            $("#nametable tbody").on("click", ".delete-button", function () {
+                const id = $(this).data("id");
+                $.ajax({
+                    url: `http://localhost:8081/namerecords/delete/${id}`,
+                    type: "DELETE",
+                    success: function (data) {
+                        console.log("資料刪除成功", data);
+                        loadData();
+                    },
+                    error: function (error) {
+                        console.error("資料刪除失敗", error);
+                    }
+                });
+            });
+            let id; // 將id設置為全局變數
+            $("#nametable tbody").on("click", ".edit-button", function () {
+                id = $(this).data("id");
+                // 發送 AJAX 請求獲取特定 ID 的姓名記錄詳細信息
+                $.ajax({
+                    url: `http://localhost:8081/namerecords/get/${id}`,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        // 將姓名記錄的詳細信息顯示在修改表單上
+                        $("#firstnameInput").val(data.firstname);
+                        $("#lastnameInput").val(data.lastname);
+                    },
+                    error: function (error) {
+                        console.error("獲取姓名記錄詳細信息失敗", error);
+                    }
+                });
+            });
+            
+
+            $("#savebutton").click(function (event) {
+                event.preventDefault();
+                loadData();
+            });
+
             loadData();
         });
-    }
-
-    $("#savebutton").click(function (event) {
-        event.preventDefault();
-        const firstname = $("#firstnameInput").val().trim();
-        const lastname = $("#lastnameInput").val().trim();
-
-        if (firstname === '' || lastname === '') {
-            alert("請輸入姓氏和名稱");
-            return;
-        }
-
-        $.ajax({
-            url: "http://localhost:8081/namerecords/create",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ firstname, lastname }),
-            dataType: "json",
-            success: function (data) {
-                console.log("資料儲存成功", data);
-                $("#firstnameInput, #lastnameInput").val('');
-                loadData();
-            },
-            error: function (error) {
-                console.error("資料儲存失敗", error);
-            }
-        });
-    });
-
-    $("#nametable tbody").on("click", ".delete-button", function () {
-        const id = $(this).data("id");
-        $.ajax({
-            url: `http://localhost:8081/namerecords/delete/${id}`,
-            type: "DELETE",
-            success: function (data) {
-                console.log("資料刪除成功", data);
-                loadData();
-            },
-            error: function (error) {
-                console.error("資料刪除失敗", error);
-            }
-        });
-    });
-
-    $("#savebutton").click(function (event) {
-        event.preventDefault();
-        loadData();
-    });
-
-    loadData();
-});
     </script>
 </body>
 
