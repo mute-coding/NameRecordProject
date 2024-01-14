@@ -1,6 +1,6 @@
 package com.example.demo.Controller;
 
-import java.util.List;
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,4 +50,13 @@ public class NameRecordController {
 	public void deleteName(@PathVariable Integer id) {
 		nameRecordSrevice.deleteName(id);
 	}
+	  @PutMapping("/update/{id}")
+	    public ResponseEntity<nameRecords> updateNameRecord(
+	            @PathVariable Integer id,
+	            @RequestBody Map<String, String> request) {
+	        String newFirstName = request.get("firstname");
+	        String newLastName = request.get("lastname");
+	        nameRecords updatedRecord = nameRecordSrevice.updateNameRecord(id, newFirstName, newLastName);
+	        return ResponseEntity.ok(updatedRecord);
+	    }
 }

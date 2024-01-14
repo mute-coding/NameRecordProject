@@ -24,6 +24,10 @@ public class nameRecords {
 		this.firstname = firstname;
 		this.lastname = lastname;
 	}
+	  public void updateNameRecord(String newFirstName, String newLastName) {
+	        this.firstname = newFirstName;
+	        this.lastname = newLastName;
+	    }
 	public Integer getId() {
 		return id;
 	}

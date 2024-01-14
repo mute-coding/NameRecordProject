@@ -1,9 +1,9 @@
 package com.example.demo.Service;
 
-import java.util.List;
+
 import java.util.Optional;
 
-import javax.management.RuntimeErrorException;
+
 
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +38,17 @@ public class NameRecordSrevice {
 	        throw new RuntimeException("找不到此id: " + id);
 	    }
 	}
+	 public nameRecords updateNameRecord(Integer id, String newFirstName, String newLastName) {
+	        Optional<nameRecords> existingRecord = nameRecordRepository.findById(id);
+	        if (existingRecord.isPresent()) {
+	            nameRecords recordToUpdate = existingRecord.get();
+	            recordToUpdate.setFirstname(newFirstName);
+	            recordToUpdate.setLastname(newLastName);
+	            return nameRecordRepository.save(recordToUpdate);
+	        } else {
+	            throw new RuntimeException("找不到此id: " + id);
+	        }
+	    }
+
 
 }
